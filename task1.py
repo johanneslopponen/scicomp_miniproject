@@ -8,12 +8,12 @@ def euler(N,T,h,D,u,num_steps,checkpoints):
 
     snapshots = {}
 
-    for n in range(1, num_steps):
+    for n in range(0, num_steps+1):
         Z = np.random.randn(N,2)
 
         X = X + u * h + np.sqrt(2 * D * h) * Z
         
-        if t[n] in checkpoints:
+        if round(t[n],1) in checkpoints:
             snapshots[int(t[n])] = X.copy()
 
     return snapshots
