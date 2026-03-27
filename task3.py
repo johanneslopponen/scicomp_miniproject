@@ -1,34 +1,41 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def euler(N,T,h,D,u,num_steps,checkpoints):
-    X = np.zeros((N,2))
+def euler(N,T,h,D,u,num_steps,checkpoints,q):
 
+    X = np.zeros((N,2))
+    particles_per_step = int(Q * h)
     t = np.linspace(0,T, num_steps + 1)
 
     snapshots = {}
 
-    for n in range(0, num_steps+1):
+    for n in range(num_steps+1):
+        new_particles = np.zeros((particles_per_step, 2))
         Z = np.random.randn(N,2)
 
-        X = X + u * h + np.sqrt(2 * D * h) * Z
+        X = np.vstack([X, new_particles])
         
-        if round(t[n],1) in checkpoints:
+        num_active = X.shape[0]
+        Z = np.random.randn(num_active, 2)
+
+        X = X + u * h + np.sqrt(2 * D * h) * Z        
+        if t[n] in checkpoints:
             snapshots[int(t[n])] = X.copy()
 
     return snapshots
 
 
 
-N = 2000         
+N = 0         
 T = 60       
 h = 0.1         
-D = 0.02         
+D = 0.02     
+Q = 100    
 u = np.array([0.3, 0]) 
 num_steps = int(T / h)
 checkpoints = [15, 30, 45, 60]
 
-snapshots = euler(N,T,h,D,u,num_steps, checkpoints)
+snapshots = euler(N,T,h,D,u,num_steps, checkpoints,Q)
 
 
 fig, axes = plt.subplots(2, 2, figsize=(12, 8), sharex=True, sharey=True)
