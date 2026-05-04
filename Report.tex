@@ -16,7 +16,7 @@
     % in the conversion process - todo).
     \usepackage{caption}
     \DeclareCaptionFormat{nocaption}{}
-    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+    \captionsetup{aboveskip=6pt,belowskip=6pt}
 
     \usepackage{float}
     \floatplacement{figure}{H} % forces figures to be placed at the correct location
@@ -36,7 +36,12 @@
     \usepackage{iftex}
     \ifPDFTeX
         \usepackage[T1]{fontenc}
-        \usepackage[utf8]{inputenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
     \else
         \usepackage{fontspec}
         \usepackage{unicode-math}
@@ -181,9 +186,11 @@
     \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
     % Document parameters
     % Document title
-    \title{Pollutant Dispersion: Deterministic and Stochastic Models}
-    \author{Johannes Löppönen, Arvid Hedin, Elis Graipe}
+    \title{Pollutant dispersion: deterministic and stochastic models}
+    \author{Johannes Löppönen, Arvid Hedin, Elis Graipe \\
+    MiniProject Group 3}
     \date{}
+    
     
     
     
@@ -406,6 +413,8 @@
     
     \maketitle
 
+
+
     \section{Introduction}\label{introduction}
 
     This project aims to model the dispersion of pollutant particles in air,
@@ -461,9 +470,10 @@ into simple stochastic rules and applied individual particles. This as a
 concequence allows for concentration field to be estimated through Monte
 Carlo simulation rather than direct numerical solving of the PDE.
 
-    \section{Task 1}\label{task-1}
+    \section{Results}\label{results}
 
-    \subsection{Numerical simulation}\label{numerical-simulation}
+\subsection{Task 1}\label{task-1}
+
 
 The Euler-Maruyama method is implemented to solve the stochastic
 differential equation (SDE) in Task 1. The Euler-Maruyama method is used
@@ -483,7 +493,7 @@ the time interval \([0, T]\). The function returns a list of arrays with
 the positions of the particles at the times specified by the function
 argument snapshots.
 
-    Using the implementation of the Euler-Maruyama method in the
+Using the implementation of the Euler-Maruyama method in the
 \emph{euler} function we compute the positions of \(N\) number of
 particles at different times \(T\) after 0. The particles originate at
 the point \(\mathbf{X}_0 = (0,0)\) and are visualized in a plot showing
@@ -497,18 +507,19 @@ these are likely to vary in the real world when taking atmospheric
 conditions into account. We also assume that the particles exist at
 \(t=0\) and that no new particles are released there after.
 
-    By calling the euler function with four different end times in
+By calling the euler function with four different end times in
 checkpoints the following snapshots can be plotted from which we can
 observe how the pollutant particles diffuse.
 
-\begin{figure}[H]
+    \begin{figure}[H]
     \centering
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_23_0.png}
-\end{figure}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_12_0.png}
+    \caption{Scatter plot of pollutant dispersion without source term.}
+    \end{figure}
 
-    \section{Task 2}\label{task-2}
+\subsection{Task 2}\label{task-2}
 
-    For the second task the purpose is to compute and visualize the
+For the second task the purpose is to compute and visualize the
 concentration of pollutant particles in the same rectangular domain as
 the in previous task.
 
@@ -519,7 +530,7 @@ where \(\mathbf{X}\) is a random variable \(\mathbf{x}\) is the current
 position of a particle and \(\delta_\epsilon\) is the Dirac delta
 distribution.
 
-    In the code we create an approximation of the Dirac delta distribution
+In the code we create an approximation of the Dirac delta distribution
 to avoid problems with infinity. This approximation is provided by the
 function \emph{delta\_eps}.
 
@@ -535,18 +546,19 @@ of particles is big enough for the Monte Carlo method to give a
 sufficiently good result as it is not possible to run the method more
 than \(N\) times.
 
-    Using the results from the previous task we can now plot the
+Using the results from the previous task we can now plot the
 concentration of pollutant particles in the same domain from
 \emph{compute\_concentration} using a surface contour plot.
 
-\begin{figure}[H]
+    \begin{figure}[H]
     \centering
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_25_0.png}
-\end{figure}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_14_0.png}
+    \caption{Concentration field of pollutant dispersion without source term.}
+    \end{figure}
 
-    \section{Task 3}\label{task-3}
+\subsection{Task 3}\label{task-3}
 
-    A more realistic simulation of pollutant dispersion often includes a
+A more realistic simulation of pollutant dispersion often includes a
 source term which takes into account that the pollutants often are
 released continuously from a chimney for example.
 
@@ -561,169 +573,61 @@ simulations from earlier with new constants and function arguments.
 The model assumes a constant release rate from the source as well as
 constant dispersion and initial velocity.
 
-\begin{figure}[H]
+Similarly, the concentration field can be plotted with the source term.
+
+    \begin{figure}[H]
     \centering
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_27_0.png}
-\end{figure}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_16_0.png}
+    \caption{Scatter plot of pollutant dispersion with source term.}
+    \end{figure}
 
-    Similarly, the concentration field can be plotted with the source term.
-
-\begin{figure}[H]
+    \begin{figure}[H]
     \centering
-    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_28_0.png}
-\end{figure}
-
-    \section{Results}\label{results}
-
-\subsection{Without Source Term}\label{without-source-term}
-
-The diffusion of the pollutant particles is quite obvious upon
-inspection of the first scatter plot. The particles disperse outward
-from the starting point but it can also be observed that the particles
-have a common drift in the positive x-direction. This is because the
-velocity vector \(\mathbf{u}\) applies to all particles.
-
-The simulation is good at showing the macroscopic changes in pollutant
-distribution but it does not give any information about the movement of
-individual particles.
-
-The concentration plot shows that the dispersion of the pollutant
-particles results in the concentration of pollutant particles
-decreasing. It also shows that the concentration, similarly to the
-particles, moves downwind because of the velocity vector \(\mathbf{u}\).
-
-\subsection{With Source Term}\label{with-source-term}
-
-The result of adding the source term is that the amount of pollutant
-particles increases over time. From inspection it seems that the amount
-of particles released is about in balance with the amount that is
-dispersed away.
-
-The plot of the concentration field with the source term shows that
-there seems to be a tight concentration of pollutant particles close to
-the origin at \(t=0\) and that once they get dispersed away the
-concentration in the plot's domain evens out with the highest
-concentration at the origin and smoothly decreasing from there.
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{Report_files/Report_17_0.png}
+    \caption{Concentration field of pollutant dispersion with source term.}
+    \end{figure}
 
     \section{Discussion}\label{discussion}
 
-    \subsection{Model Parameters}\label{model-parameters}
-
-The simulation results are heavily influenced by the parameters D, u,
+    The simulation results are heavily influenced by the parameters D, u,
 and Q, each representing a distinct physical mechanism in the transport
-of pollutants.
+of pollutants. The diffusion coefficient D represents molecular
+agitation and random motion, a value of zero results in no spreading,
+while increasing D causes the particle cloud to expand more rapidly,
+leading to lower concentrations. The velocity field u represents
+deterministic transport by fluid flow, determining the cloud's center of
+mass trajectory without affecting its expansion rate. Finally, the
+emission rate Q defines the pollutant source strength, where a non-zero
+Q in Task 3 represents a continuous source like an exhaust pipe,
+creating a steady-state output with peak concentrations at the source
+location.
 
-\subsubsection{Diffusion Coefficient (D)}\label{diffusion-coefficient-d}
+This project highlights the complementarity between the macroscopic
+Eulerian viewpoint (PDE) and the microscopic Lagrangian viewpoint (SDE).
+The advection-diffusion equation provides a mathematically rigorous,
+smooth representation of density but can be computationally demanding.
+In contrast, the stochastic approach uses Itô differential equations to
+simulate individual particle trajectories, which is often easier to
+implement for complex scenarios like continuous injection without
+requiring a mesh. However, a key challenge in this method is the choice
+of the smoothing parameter ϵ, a value too small makes the field appear
+noisy, while one too large artificially flattens concentration peaks.
 
-This parameter represents the molecular agitation and random motion that
-causes particles to spread away from each other. A value of zero would
-result in no spreading. The particles would simply follow the
-streamlines of the velocity field as a single point. As D increases, the
-``particle cloud'' expands more rapidly, leading to a lower
-concentration as the pollutant is diluted over a larger area.
+The simulation results across different tasks demonstrate how advection
+and diffusion jointly determine the pollutant's shape. While advection
+pushes the cloud along the x-axis, diffusion causes it to expand in all
+directions, decreasing peak concentration over time. The most striking
+difference appears between the instantaneous release in Tasks 1 and 2
+and the continuous release in Task 3. In the former, the cloud remains
+roughly circular as it expands and drifts. In the latter, the constant
+injection of particles fills the space between the source and the
+leading edge, forming a characteristic cone-shaped plume typically seen
+in atmospheric dispersion.
 
-\subsubsection{Velocity (u)}\label{velocity-u}
-
-The velocity field u represents the deterministic transport of the
-pollutant by the mean fluid flow, such as wind or water currents. While
-D causes the cloud to grow in size, u determines the trajectory of the
-cloud's center of mass.
-
-\subsubsection{Emission Rate (Q)}\label{emission-rate-q}
-
-The parameter Q defines the emission rate of the pollutant source. In
-Tasks 1 and 2, Q is effectively zero after t=0 because we modeled an
-initial single-release scenario where N=2000 particles were released
-simultaneously. In Task 3, a non-zero Q represents a continuous source,
-such as an exhaust pipe or chimney. This creates a steady-state output
-where the highest concentrations remain at the source location.
-
-\subsection{Deterministic and Stochastic
-Approaches}\label{deterministic-and-stochastic-approaches}
-
-The project highlights two complementary viewpoints for modeling the
-same physical process: the macroscopic Eulerian viewpoint and the
-microscopic Lagrangian viewpoint.
-
-\subsubsection{The Eulerian Viewpoint
-(PDE):}\label{the-eulerian-viewpoint-pde}
-
-The advection diffusion equation describes the evolution of the
-concentration field C(x,t) as a continuous distribution. This approach
-is mathematically rigorous and provides a smooth representation of the
-pollutant density, but solving the PDE directly can be computationally
-demanding in complex 3D geometries.
-
-\subsubsection{The Lagrangian Viewpoint
-(SDE):}\label{the-lagrangian-viewpoint-sde}
-
-The stochastic approach focuses on the trajectories of individual
-particles X(t) using Itô stochastic differential equations. By
-simulating a large number of independent realizations (N), we can
-estimate the concentration field using a Monte Carlo method.
-
-\subsubsection{Comparison and
-Reflections:}\label{comparison-and-reflections}
-
-Consistency: The two models are linked via the Fokker-Planck equation,
-which shows that the probability density function (pdf) of the random
-particle motion satisfies the same equation as the physical
-concentration field.
-
-Implementation: The stochastic method (Euler-Maruyama) is often easier
-to implement for complex scenarios, such as the continuous injection of
-new particles in Task 3. It does not require a complex mesh for the
-solver, though it does require a high N to reduce statistical noise.
-
-Smoothing: A key challenge in the stochastic approach is the choice of
-the smoothing parameter \(\epsilon\). If \(\epsilon\) is too small, the reconstructed
-concentration field appears ``noisy'' or ``spiky'', if it is too large,
-the spatial resolution is lost, and the concentration peaks are
-artificially flattened.
-
-\subsection{Simulation Results Task 2}\label{simulation-results-task-2}
-
-The simulation results show how the pollutants movement and shape are
-determined by the results of advection and diffusion. The advection
-effect from u is clearly visible how it acts as a transport mechanism
-that pushes the entire particle cloud along the x-axis. This represents
-the physical flow of the surrounding matter carrying the pollutant mass
-away from its starting point.
-
-While advection moves the cloud, diffusion is what causes it to spread
-out and expand in all directions. As the simulation time increases the
-plume becomes visibly wider and the peak concentration decreases because
-the same amount of pollutant gets spread over a larger area.
-
-Experiments with different constant values reveal how each factor
-influences the clouds evolution. Increasing the velocity u causes the
-cloud to travel further across the domain in the same amount of time,
-but it does not change how fast the cloud grows. On the other hand,
-increasing the diffusion coefficient D makes the cloud expand much
-faster, making it look larger and more diluted. The smoothing parameter
-\(\epsilon\) also affects the results where a smaller value provides a
-sharper view of the concentration and vice versa.
-
-\subsection{Difference Between Task 1,2 and Task
-3}\label{difference-between-task-12-and-task-3}
-
-The most striking difference is the visual structure of the particle
-cloud. In task 1 and 2 all particles are released simultaneously at X =
-0,0 and t = 0. And here it is only the model parameter D that is
-affecting the particle cloud, so the particles moves out in all
-directions from 0,0.
-
-In task 3 the particles are injected at a constant rate Q=100 per
-second. This results in a ``plume'' that stretches from the source at
-0,0 all the way to the leading edge of the flow. Because new particles
-are added at every time step t, the space between the source and the
-front of the plume is constantly filled. This leads to a particle cloud
-that is not round but is more cone formed.
-
-    \section{Python Code}\label{python-code}
+    \section{Appendix}\label{appendix}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{187}{\boxspacing}
+\prompt{In}{incolor}{74}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{numpy}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{np}
 \PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{plt}
@@ -731,95 +635,95 @@ that is not round but is more cone formed.
 \end{tcolorbox}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{188}{\boxspacing}
+\prompt{In}{incolor}{75}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Implementation of the Euler\PYZhy{}Maruyama method for simulating particle trajectories}
 \PY{k}{def}\PY{+w}{ }\PY{n+nf}{euler}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{n}{T}\PY{p}{,} \PY{n}{h}\PY{p}{,} \PY{n}{D}\PY{p}{,} \PY{n}{u}\PY{p}{,} \PY{n}{num\PYZus{}steps}\PY{p}{,} \PY{n}{checkpoints}\PY{p}{,} \PY{n}{q}\PY{p}{)}\PY{p}{:}
+\PY{+w}{    }\PY{l+s+sd}{\PYZsq{}\PYZsq{}\PYZsq{}N number of particles, T total time, h time step, D diffusion coefficient, u velocity vector, num\PYZus{}steps number of steps, checkpoints list of time checkpoints to save snapshots, q particle injection rate\PYZsq{}\PYZsq{}\PYZsq{}}
     \PY{n}{X} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{N}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
     \PY{n}{particles\PYZus{}per\PYZus{}step} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{q} \PY{o}{*} \PY{n}{h}\PY{p}{)} 
     \PY{n}{t} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{T}\PY{p}{,} \PY{n}{num\PYZus{}steps} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}
 
-    \PY{n}{snapshots} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+    \PY{n}{snapshots} \PY{o}{=} \PY{p}{[}\PY{p}{]} \PY{c+c1}{\PYZsh{} To store particle positions at different time checkpoints}
 
-    \PY{k}{for} \PY{n}{n} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{num\PYZus{}steps} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:}
-        \PY{n}{new\PYZus{}particles} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{particles\PYZus{}per\PYZus{}step}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+    \PY{k}{for} \PY{n}{n} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{num\PYZus{}steps} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Loop over time steps}
+        \PY{n}{new\PYZus{}particles} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{particles\PYZus{}per\PYZus{}step}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)} \PY{c+c1}{\PYZsh{} New particles are injected at the origin (0, 0)}
         \PY{n}{X} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{vstack}\PY{p}{(}\PY{p}{[}\PY{n}{X}\PY{p}{,} \PY{n}{new\PYZus{}particles}\PY{p}{]}\PY{p}{)}
         
-        \PY{n}{num\PYZus{}active} \PY{o}{=} \PY{n}{X}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+        \PY{n}{num\PYZus{}active} \PY{o}{=} \PY{n}{X}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{c+c1}{\PYZsh{} Update positions of all active particles using the Euler\PYZhy{}Maruyama method}
         \PY{n}{Z} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randn}\PY{p}{(}\PY{n}{num\PYZus{}active}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}
         \PY{n}{X} \PY{o}{=} \PY{n}{X} \PY{o}{+} \PY{n}{u} \PY{o}{*} \PY{n}{h} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{l+m+mi}{2} \PY{o}{*} \PY{n}{D} \PY{o}{*} \PY{n}{h}\PY{p}{)} \PY{o}{*} \PY{n}{Z}        
         
         \PY{k}{if} \PY{n+nb}{any}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{isclose}\PY{p}{(}\PY{n}{t}\PY{p}{[}\PY{n}{n}\PY{p}{]}\PY{p}{,} \PY{n}{checkpoints}\PY{p}{)}\PY{p}{)}\PY{p}{:}
             \PY{n}{snapshots}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}\PY{p}{)}
 
-    \PY{k}{return} \PY{n}{snapshots}
+    \PY{k}{return} \PY{n}{snapshots} \PY{c+c1}{\PYZsh{} Return the snapshots of particle positions at specified checkpoints}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{189}{\boxspacing}
+\prompt{In}{incolor}{76}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
 \PY{c+c1}{\PYZsh{} Constants}
+\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{2000}        \PY{c+c1}{\PYZsh{} Initial number of particles}
+\PY{n}{T} \PY{o}{=} \PY{l+m+mi}{60}          \PY{c+c1}{\PYZsh{} Total simulation time}
+\PY{n}{h} \PY{o}{=} \PY{l+m+mf}{0.1}         \PY{c+c1}{\PYZsh{} Time step}
+\PY{n}{D} \PY{o}{=} \PY{l+m+mf}{0.02}        \PY{c+c1}{\PYZsh{} Diffusion coefficient}
+\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mf}{0.1}   \PY{c+c1}{\PYZsh{} Epsilon}
 
-\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{2000}         
-\PY{n}{T} \PY{o}{=} \PY{l+m+mi}{60}       
-\PY{n}{h} \PY{o}{=} \PY{l+m+mf}{0.1}         
-\PY{n}{D} \PY{o}{=} \PY{l+m+mf}{0.02}
-\PY{n}{epsilon} \PY{o}{=} \PY{l+m+mf}{0.1}
-
-\PY{n}{u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} 
+\PY{n}{u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}      \PY{c+c1}{\PYZsh{} Velocity vector (drift in the x\PYZhy{}direction)}
 \PY{n}{num\PYZus{}steps} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{T} \PY{o}{/} \PY{n}{h}\PY{p}{)}
-\PY{n}{checkpoints} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{45}\PY{p}{,} \PY{l+m+mi}{60}\PY{p}{]}
+\PY{n}{checkpoints} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{45}\PY{p}{,} \PY{l+m+mi}{60}\PY{p}{]} \PY{c+c1}{\PYZsh{} Time checkpoints to save snapshots}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{190}{\boxspacing}
+\prompt{In}{incolor}{77}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{c+c1}{\PYZsh{} Plot}
-
-\PY{n}{snapshots} \PY{o}{=} \PY{n}{euler}\PY{p}{(}\PY{n}{N}\PY{p}{,}\PY{n}{T}\PY{p}{,}\PY{n}{h}\PY{p}{,}\PY{n}{D}\PY{p}{,}\PY{n}{u}\PY{p}{,}\PY{n}{num\PYZus{}steps}\PY{p}{,} \PY{n}{checkpoints}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} No source term}
+\PY{c+c1}{\PYZsh{} Plotting the results without a source term (q=0)}
+\PY{n}{snapshots} \PY{o}{=} \PY{n}{euler}\PY{p}{(}\PY{n}{N}\PY{p}{,}\PY{n}{T}\PY{p}{,}\PY{n}{h}\PY{p}{,}\PY{n}{D}\PY{p}{,}\PY{n}{u}\PY{p}{,}\PY{n}{num\PYZus{}steps}\PY{p}{,} \PY{n}{checkpoints}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)} \PY{c+c1}{\PYZsh{} Calling the Euler\PYZhy{}Maruyama function with the above parameters.}
 \PY{n}{fig}\PY{p}{,} \PY{n}{axes} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,} \PY{n}{sharex}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{sharey}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
 \PY{n}{axes} \PY{o}{=} \PY{n}{axes}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}
 
 \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{checkpoints}\PY{p}{)}\PY{p}{:}
     \PY{n}{pos} \PY{o}{=} \PY{n}{snapshots}\PY{p}{[}\PY{n}{i}\PY{p}{]}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{pos}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{s}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Tid: }\PY{l+s+si}{\PYZob{}}\PY{n}{t}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Time: }\PY{l+s+si}{\PYZob{}}\PY{n}{t}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}  
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Particle Scatter Plot}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m+mf}{0.95}\PY{p}{)}
 \PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
-
 \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
-\end{Verbatim}
-\end{tcolorbox}    
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{191}{\boxspacing}
-\begin{Verbatim}[commandchars=\\\{\}]
-\PY{k}{def}\PY{+w}{ }\PY{n+nf}{delta\PYZus{}eps}\PY{p}{(}\PY{n}{dist}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}\PY{p}{:}
-    \PY{n}{fac} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{o}{*}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
-    \PY{n}{e} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{dist} \PY{o}{/} \PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
-    \PY{k}{return} \PY{n}{fac} \PY{o}{*} \PY{n}{e}
-
-\PY{k}{def}\PY{+w}{ }\PY{n+nf}{compute\PYZus{}concentration}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{snapshot}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}\PY{p}{:}
-    \PY{n}{N} \PY{o}{=} \PY{n}{snapshot}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{c+c1}{\PYZsh{}Amount of particles at time t}
-    \PY{n}{C} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
-
-    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:}
-        \PY{n}{dist} \PY{o}{=} \PY{p}{(}\PY{p}{(}\PY{n}{x\PYZus{}grid} \PY{o}{\PYZhy{}} \PY{n}{snapshot}\PY{p}{[}\PY{n}{k}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{y\PYZus{}grid} \PY{o}{\PYZhy{}} \PY{n}{snapshot}\PY{p}{[}\PY{n}{k}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
-        \PY{n}{C} \PY{o}{+}\PY{o}{=} \PY{n}{delta\PYZus{}eps}\PY{p}{(}\PY{n}{dist}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}
-
-    \PY{k}{return} \PY{n}{C} \PY{o}{/} \PY{n}{N}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{192}{\boxspacing}
+\prompt{In}{incolor}{78}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{c+c1}{\PYZsh{} Setup grid}
+\PY{k}{def}\PY{+w}{ }\PY{n+nf}{delta\PYZus{}eps}\PY{p}{(}\PY{n}{dist}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Gaussian kernel function to approximate the delta function}
+    \PY{n}{fac} \PY{o}{=} \PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{pi}\PY{o}{*}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+    \PY{n}{e} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{dist} \PY{o}{/} \PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{epsilon}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+    \PY{k}{return} \PY{n}{fac} \PY{o}{*} \PY{n}{e}
+
+\PY{k}{def}\PY{+w}{ }\PY{n+nf}{compute\PYZus{}concentration}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{snapshot}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Compute the concentration field from particle positions using the Gaussian kernel}
+    \PY{n}{N} \PY{o}{=} \PY{n}{snapshot}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{c+c1}{\PYZsh{}Amount of particles at time t}
+    \PY{n}{C} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+
+    \PY{k}{for} \PY{n}{k} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{N}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Loop over all particles and add their contribution to the concentration field using the Gaussian kernel}
+        \PY{n}{dist} \PY{o}{=} \PY{p}{(}\PY{p}{(}\PY{n}{x\PYZus{}grid} \PY{o}{\PYZhy{}} \PY{n}{snapshot}\PY{p}{[}\PY{n}{k}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2} \PY{o}{+} \PY{p}{(}\PY{n}{y\PYZus{}grid} \PY{o}{\PYZhy{}} \PY{n}{snapshot}\PY{p}{[}\PY{n}{k}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{o}{*}\PY{o}{*}\PY{l+m+mi}{2}\PY{p}{)}
+        \PY{n}{C} \PY{o}{+}\PY{o}{=} \PY{n}{delta\PYZus{}eps}\PY{p}{(}\PY{n}{dist}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{C}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{ }{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Setup grid for concentration field}
 \PY{n}{nx}\PY{p}{,} \PY{n}{ny} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{200}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
 \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{,} \PY{n}{nx}\PY{p}{)}
 \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{n}{ny}\PY{p}{)}
@@ -828,98 +732,101 @@ that is not round but is more cone formed.
 \PY{c+c1}{\PYZsh{} Plot concentrations}
 \PY{n}{fig}\PY{p}{,} \PY{n}{axes} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,} \PY{n}{sharex}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{sharey}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
 \PY{n}{axes} \PY{o}{=} \PY{n}{axes}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}
-\PY{n}{vmin}\PY{p}{,} \PY{n}{vmax} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{0.2}
 
-\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{snapshots}\PY{p}{)}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Snapshots is the results from Task 1}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{snapshots}\PY{p}{)}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Compute and plot the concentration field for each snapshot.}
     \PY{n}{X} \PY{o}{=} \PY{n}{snapshots}\PY{p}{[}\PY{n}{i}\PY{p}{]}
     \PY{n}{C} \PY{o}{=} \PY{n}{compute\PYZus{}concentration}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}
-    \PY{n}{contour} \PY{o}{=} \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{contourf}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{C}\PY{p}{,} \PY{n}{levels}\PY{o}{=}\PY{l+m+mi}{50}\PY{p}{,} 
-                               \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Reds}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{vmin}\PY{o}{=}\PY{n}{vmin}\PY{p}{,} \PY{n}{vmax}\PY{o}{=}\PY{n}{vmax}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Tid: }\PY{l+s+si}{\PYZob{}}\PY{n}{checkpoints}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{contour} \PY{o}{=} \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{contourf}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{C}\PY{p}{,} \PY{n}{levels}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{,} \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Reds}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Time: }\PY{l+s+si}{\PYZob{}}\PY{n}{checkpoints}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}  
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Concentration Field}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m+mf}{0.95}\PY{p}{)}
 \PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
 
-\PY{n}{fig}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.15}\PY{p}{)}
+\PY{n}{fig}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.18}\PY{p}{)}
 \PY{n}{cbar\PYZus{}ax} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}axes}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.15}\PY{p}{,} \PY{l+m+mf}{0.08}\PY{p}{,} \PY{l+m+mf}{0.7}\PY{p}{,} \PY{l+m+mf}{0.03}\PY{p}{]}\PY{p}{)}
 \PY{n}{fig}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{n}{contour}\PY{p}{,} \PY{n}{cax}\PY{o}{=}\PY{n}{cbar\PYZus{}ax}\PY{p}{,} \PY{n}{orientation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{horizontal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Concentration \PYZdl{}C(x,y,t)\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
 
 \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}    
+\end{tcolorbox}
+
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{193}{\boxspacing}
+\prompt{In}{incolor}{80}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{c+c1}{\PYZsh{} Constants}
-\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{0}         
-\PY{n}{T} \PY{o}{=} \PY{l+m+mi}{60}       
-\PY{n}{h} \PY{o}{=} \PY{l+m+mf}{0.1}         
-\PY{n}{D} \PY{o}{=} \PY{l+m+mf}{0.02}     
-\PY{n}{Q} \PY{o}{=} \PY{l+m+mi}{100}    
-\PY{n}{u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} 
+\PY{c+c1}{\PYZsh{} Constants for the simulation with a source term (q=100)}
+\PY{n}{N} \PY{o}{=} \PY{l+m+mi}{0}         \PY{c+c1}{\PYZsh{} Initial number of particles (starts at 0 since we have a source term)}
+\PY{n}{T} \PY{o}{=} \PY{l+m+mi}{60}        \PY{c+c1}{\PYZsh{} Total simulation time}
+\PY{n}{h} \PY{o}{=} \PY{l+m+mf}{0.1}       \PY{c+c1}{\PYZsh{} Time step}
+\PY{n}{D} \PY{o}{=} \PY{l+m+mf}{0.02}      \PY{c+c1}{\PYZsh{} Diffusion coefficient}
+\PY{n}{Q} \PY{o}{=} \PY{l+m+mi}{100}       \PY{c+c1}{\PYZsh{} Source term}
+\PY{n}{u} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.3}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Velocity vector}
 \PY{n}{num\PYZus{}steps} \PY{o}{=} \PY{n+nb}{int}\PY{p}{(}\PY{n}{T} \PY{o}{/} \PY{n}{h}\PY{p}{)}
-\PY{n}{checkpoints} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{45}\PY{p}{,} \PY{l+m+mi}{60}\PY{p}{]}
+\PY{n}{checkpoints} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{15}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{45}\PY{p}{,} \PY{l+m+mi}{60}\PY{p}{]} \PY{c+c1}{\PYZsh{} Time checkpoints to save snapshots}
 \end{Verbatim}
 \end{tcolorbox}
 
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{194}{\boxspacing}
+\prompt{In}{incolor}{81}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{n}{snapshots} \PY{o}{=} \PY{n}{euler}\PY{p}{(}\PY{n}{N}\PY{p}{,}\PY{n}{T}\PY{p}{,}\PY{n}{h}\PY{p}{,}\PY{n}{D}\PY{p}{,}\PY{n}{u}\PY{p}{,}\PY{n}{num\PYZus{}steps}\PY{p}{,} \PY{n}{checkpoints}\PY{p}{,}\PY{n}{Q}\PY{p}{)}
+\PY{n}{snapshots} \PY{o}{=} \PY{n}{euler}\PY{p}{(}\PY{n}{N}\PY{p}{,}\PY{n}{T}\PY{p}{,}\PY{n}{h}\PY{p}{,}\PY{n}{D}\PY{p}{,}\PY{n}{u}\PY{p}{,}\PY{n}{num\PYZus{}steps}\PY{p}{,} \PY{n}{checkpoints}\PY{p}{,}\PY{n}{Q}\PY{p}{)} \PY{c+c1}{\PYZsh{} Calling the Euler\PYZhy{}Maruyama function with the above parameters, including the source term (q=100).}
 
 \PY{n}{fig}\PY{p}{,} \PY{n}{axes} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,} \PY{n}{sharex}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{sharey}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
 \PY{n}{axes} \PY{o}{=} \PY{n}{axes}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}
 
-\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{checkpoints}\PY{p}{)}\PY{p}{:}
+\PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{t} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{checkpoints}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Plotting the particle positions at different time checkpoints.}
     \PY{n}{pos} \PY{o}{=} \PY{n}{snapshots}\PY{p}{[}\PY{n}{i}\PY{p}{]}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{pos}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{pos}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{s}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.5}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Tid: }\PY{l+s+si}{\PYZob{}}\PY{n}{t}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Time: }\PY{l+s+si}{\PYZob{}}\PY{n}{t}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}  
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Particle Scatter Plot with Source}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m+mf}{0.95}\PY{p}{)}
 \PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
 \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
-\end{tcolorbox}    
+\end{tcolorbox}
+
     \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{195}{\boxspacing}
+\prompt{In}{incolor}{82}{\boxspacing}
 \begin{Verbatim}[commandchars=\\\{\}]
-\PY{c+c1}{\PYZsh{} Setup grid}
+\PY{c+c1}{\PYZsh{} Setup grid for concentration field}
 \PY{n}{nx}\PY{p}{,} \PY{n}{ny} \PY{o}{=} \PY{p}{(}\PY{l+m+mi}{200}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{)}
 \PY{n}{x} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{,} \PY{n}{nx}\PY{p}{)}
 \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{n}{ny}\PY{p}{)}
 \PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{meshgrid}\PY{p}{(}\PY{n}{x}\PY{p}{,} \PY{n}{y}\PY{p}{)}
 
-\PY{c+c1}{\PYZsh{} Plot concentrations}
 \PY{n}{fig}\PY{p}{,} \PY{n}{axes} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{12}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{,} \PY{n}{sharex}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{sharey}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
 \PY{n}{axes} \PY{o}{=} \PY{n}{axes}\PY{o}{.}\PY{n}{flatten}\PY{p}{(}\PY{p}{)}
-\PY{n}{vmin}\PY{p}{,} \PY{n}{vmax} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mf}{0.2}
 
-\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{snapshots}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+\PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{snapshots}\PY{p}{)}\PY{p}{)}\PY{p}{:} \PY{c+c1}{\PYZsh{} Compute and plot the concentration field for each snapshot with the source term}
     \PY{n}{C} \PY{o}{=} \PY{n}{compute\PYZus{}concentration}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{snapshots}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{epsilon}\PY{p}{)}
-    \PY{n}{contour} \PY{o}{=} \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{contourf}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{C}\PY{p}{,} \PY{n}{levels}\PY{o}{=}\PY{l+m+mi}{50}\PY{p}{,} 
-                               \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Reds}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{vmin}\PY{o}{=}\PY{n}{vmin}\PY{p}{,} \PY{n}{vmax}\PY{o}{=}\PY{n}{vmax}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Tid: }\PY{l+s+si}{\PYZob{}}\PY{n}{checkpoints}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{contour} \PY{o}{=} \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{contourf}\PY{p}{(}\PY{n}{x\PYZus{}grid}\PY{p}{,} \PY{n}{y\PYZus{}grid}\PY{p}{,} \PY{n}{C}\PY{p}{,} \PY{n}{levels}\PY{o}{=}\PY{l+m+mi}{15}\PY{p}{,} 
+                               \PY{n}{cmap}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Reds}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Time: }\PY{l+s+si}{\PYZob{}}\PY{n}{checkpoints}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlim}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{)}
     \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylim}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{)}  
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
-    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{x [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+    \PY{n}{axes}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{y [Position]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
 
 \PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Concentration Field with Source}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{16}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m+mf}{0.95}\PY{p}{)}
 \PY{n}{plt}\PY{o}{.}\PY{n}{tight\PYZus{}layout}\PY{p}{(}\PY{p}{)}
 
-\PY{n}{fig}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.15}\PY{p}{)}
+\PY{n}{fig}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.18}\PY{p}{)}
 \PY{n}{cbar\PYZus{}ax} \PY{o}{=} \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}axes}\PY{p}{(}\PY{p}{[}\PY{l+m+mf}{0.15}\PY{p}{,} \PY{l+m+mf}{0.08}\PY{p}{,} \PY{l+m+mf}{0.7}\PY{p}{,} \PY{l+m+mf}{0.03}\PY{p}{]}\PY{p}{)}
 \PY{n}{fig}\PY{o}{.}\PY{n}{colorbar}\PY{p}{(}\PY{n}{contour}\PY{p}{,} \PY{n}{cax}\PY{o}{=}\PY{n}{cbar\PYZus{}ax}\PY{p}{,} \PY{n}{orientation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{horizontal}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Concentration \PYZdl{}C(x,y,t)\PYZdl{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
 
 \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
 \end{Verbatim}
 \end{tcolorbox}
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
 \end{document}
